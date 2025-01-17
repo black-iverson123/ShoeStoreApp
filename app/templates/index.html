@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shoe Store</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+    <script src="{{ url_for('static', filename='js/index.js')}}"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+
+</head>
+<body>
+    <header>
+        <h1>Welcome to Our Shoe Store</h1>
+        <nav>
+            <ul>
+                {% if not current_user.is_authenticated %}
+                    <li><a href="{{ url_for('login')}}">Login</a></li>
+                    <li><a href="{{url_for('register')}}">Register</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('dashboard')}}">Dashboard</a></li> 
+                    <li><a href="{{ url_for('logout')}}">Logout</a></li>
+                    <li><a href="{{ url_for('cart')}}"> Cart</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('about')}}">About Us</a></li>
+                <li><a href="{{ url_for('contact')}}">Contact</a></li>
+          
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <section id="home">
+        <h2>Find Your Perfect Fit</h2>
+        <p>Explore our wide range of shoes for every occasion.</p>
+    </section>
+
+    <section id="products">
+        <h2>Our Products</h2>
+        <div id="flash-container"></div> <!--This is dynamically loaded by ajax-->
+        <div id="products-grid">
+            <!-- Product listings -->
+            {% for product in products %}
+                <div class="card">
+                    {% if product.image_base64 %}
+                        <img src="data:image/jpeg;base64,{{ product.image_base64 }}" alt="{{ product.product_name }}">
+                    {% else %}
+                        <p>No image available</p>
+                    {% endif %}
+                    <h3>Brand: {{ product.product_name }}</h3>
+                    <p><b>Price: ${{ product.price }}</b></p>
+                    <p><em>Description: {{ product.description }}</em></p>
+                    
+                    <!-- Quantity and Size inputs with Buy button -->
+                    <div class="actions">
+                        <div class="input-group">
+                            <label for="quantity-{{ product.id }}">Quantity:</label>
+                            <input type="number" id="quantity-{{ product.id }}" name="quantity" min="1" value="1">
+                        </div>
+                        <div class="input-group">
+                            <label for="size-{{ product.id }}">Size:</label>
+                            <input type="number" id="size-{{ product.id }}" name="size" min="1" value="38" step="1" placeholder="Enter size">
+                        </div>
+                        {% if current_user.is_authenticated %}
+                            <button class="buy-btn" onclick="buyProduct('{{ product.id }}')">Buy</button>
+                        {% else %}
+                            <button class="buy-btn" onclick="newUser()">Buy</button>
+                        {% endif %}
+                    </div>
+                </div> 
+            {% endfor %}
+        </div>
+    </section>
+
+    <!-- Chatbot Icon -->
+    <div class="chatbot-icon-container" onclick="toggleForm()">
+        <span class="chatbot-icon">&#128172;</span> <!-- This is a speech bubble emoji -->
+    </div>
+
+    <!-- Popup Form (Chatbot with Form Fields) -->
+    <div class="popup-form" id="popupForm">
+        <h3>Need Some Help!</h3>
+        <div class="chat-content">
+            <div class="message bot-message">
+                <p>Hi There!, want to buy a shoe as a surprise but don't remember the shoe size,
+                    just fill in the form and I'll be happy to suggest a shoe size.
+                    <em>Note: Shoes ordered on wrong size basis can be returned</em>
+                </p>
+            </div>
+        </div>
+
+        <!-- Form Fields -->
+        <form id="chatbotForm">
+            <div class="input-group">
+                <label for="height">Height:</label>
+                <input type="number" id="height" placeholder="Height" required />
+            </div>
+            <div class="input-group">
+                <label for="weight">Weight:</label>
+                <input type="number" id="weight" placeholder="Weight" required />
+            </div>
+            <div class="input-group">
+                <label for="gender">Gender:</label>
+                <input id="text" placeholder="Gender" required/>
+            </div>
+            <button type="submit" class="send-btn">Check</button>
+        </form>
+        <button class="close-btn" onclick="toggleForm()">Close</button>
+    </div>
+
+
+    <footer>
+        <p>&copy; 2025 Shoe Store. All rights reserved.</p>
+    </footer>
+</body>
+</html>

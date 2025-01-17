@@ -1,0 +1,6 @@
+*.db
+.env
+migrations/
+flask_session/
+_pycache_/
+*.pyc

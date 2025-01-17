@@ -1,0 +1,1 @@
+This is a flask web app for shoe shopping and uses a machine learning model to help customers predict sizes.
