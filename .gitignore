@@ -4,3 +4,4 @@ migrations/
 flask_session/
 _pycache_/
 *.pyc
+venv/
